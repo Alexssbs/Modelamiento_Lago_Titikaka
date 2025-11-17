@@ -1,5 +1,5 @@
 """
-Ejemplos de uso del Modelo de Dinámica de Sistemas del Lago Titicaca.
+Ejemplos de uso del Modelo de Dinámica de Sistemas del Lago Titicaca. y demass
 
 Este archivo muestra diferentes formas de usar el modelo programáticamente.
 """
