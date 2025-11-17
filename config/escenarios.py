@@ -138,8 +138,8 @@ def crear_escenario_personalizado(nombre, eficiencia_puno, eficiencia_juliaca,
     escenario = {
         'nombre': nombre,
         'descripcion': f'Escenario personalizado: Puno {eficiencia_puno*100:.0f}%, '
-                      f'Juliaca {eficiencia_juliaca*100:.0f}%, '
-                      f'Remoción {remocion_lemna} ton/año',
+                    f'Juliaca {eficiencia_juliaca*100:.0f}%, '
+                    f'Remoción {remocion_lemna} ton/año',
         'eficiencia_tratamiento_puno': eficiencia_puno,
         'eficiencia_tratamiento_juliaca': eficiencia_juliaca,
         'remocion_mecanica_lemna': remocion_lemna,

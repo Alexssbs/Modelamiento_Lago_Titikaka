@@ -276,3 +276,4 @@ class GraficadorTiticaca:
         # print(f"\nTodos los gráficos guardados en: {directorio}/")
         
         plt.close('all')
+        
