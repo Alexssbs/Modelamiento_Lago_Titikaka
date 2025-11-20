@@ -51,7 +51,7 @@ class RunnerSimulacion:
             print(f"Descripción: {escenario['descripcion']}")
             print(f"Eficiencia Puno: {escenario['eficiencia_tratamiento_puno']*100:.0f}%")
             print(f"Eficiencia Juliaca: {escenario['eficiencia_tratamiento_juliaca']*100:.0f}%")
-            print(f"Remoción Lemna: {escenario['remocion_mecanica_lemna']} ton/año")
+            print(f"Remoción Lemna123: {escenario['remocion_mecanica_lemna']} ton/año")
         
         # Crear y ejecutar modelo
         modelo = ModeloTiticaca(self.parametros, escenario)
@@ -204,7 +204,7 @@ class RunnerSimulacion:
         
         Args:
             criterio (str): Métrica a usar ('reduccion_nutrientes_pct', 
-                           'reduccion_lemna_pct', 'mejora_oxigeno_pct')
+                        'reduccion_lemna_pct', 'mejora_oxigeno_pct')
             
         Returns:
             tuple: (nombre_escenario, valor_metrica)

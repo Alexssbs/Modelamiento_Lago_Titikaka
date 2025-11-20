@@ -1,5 +1,5 @@
 """
-Parámetros del Lago Titicaca basados en estudios reales para un modelo hidrológico‑ecológico.
+Parámetros del Lago Titicaca basados en estudios reales para un modelo hidrológico-ecológico.
 """
 
 # ================================
@@ -7,41 +7,39 @@ Parámetros del Lago Titicaca basados en estudios reales para un modelo hidroló
 # ================================
 PARAMETROS_INICIALES = {
     # Stocks iniciales
-    'volumen_inicial': 8.93e11,         # m³ (valor real conocido)
-    
-    # Nutrientes (Fósforo total): basado en estudio de la zona litoral de Juli
-    # Olivera Vilca (2022) midió ~0.027–0.028 mg/L en época lluviosa/seca. :contentReference[oaicite:0]{index=0}
-    'nutrientes_inicial': 0.028,        
+    'volumen_inicial': 8.93e11,         # m³ (valor real aproximado)
 
-    # Lemna (asumido): no hay dato preciso real reciente, pero ponemos un valor moderado
-    'lemna_inicial': 300,                # ton
+    # Nutrientes (Fósforo total): valores medidos en zona litoral (lluvias/seca)
+    'nutrientes_inicial': 0.028,        # mg/L
 
-    # Oxígeno disuelto inicial (valor plausible)
-    'oxigeno_inicial': 8.0,              # mg/L
+    # Biomasa Lemna (supuesto)
+    'lemna_inicial': 300,               # ton
+
+    # Oxígeno disuelto inicial
+    'oxigeno_inicial': 8.0,             # mg/L
 
     # Hidrología
-    'area_lago': 8.372e9,               # m² (dato real)
+    'area_lago': 8.372e9,               # m²
     'profundidad_promedio': 107,        # m
-    'precipitacion_anual': 0.75,  
-    'evaporacion_anual': 1.55,
-    'flujo_rios': 6.5e9,
-    'extraccion_humana': 1.5e8,
+    'precipitacion_anual': 0.75,        # m/año
+    'evaporacion_anual': 1.55,          # m/año
+    'flujo_rios': 6.5e9,                # m³/año
+    'extraccion_humana': 1.5e8,         # m³/año
 
     # Contaminación - descargas de fósforo
-    # Se usa un valor bajo-moderado para PTAR, porque algunos estudios sugieren que no todo el P está tratado.
-    # Además, el río Coata reporta hasta 10.287 mg/L de P en su afluencia según Quispe et al. (2019). :contentReference[oaicite:1]{index=1}  
-    'descarga_puno': 15,                 # t/año P
-    'descarga_juliaca': 15,              # t/año P
-    'descarga_otras': 5,                  # t/año P
+    'descarga_puno': 15,                # t/año P
+    'descarga_juliaca': 15,             # t/año P
+    'descarga_otras': 5,                # t/año P
 
-    'concentracion_descarga': 8,          # mg/L de P total (supuesto, coincide con tu modelo original)
+    # Concentración de fósforo en aguas residuales
+    'concentracion_descarga': 8,        # mg/L
 
     # Dinámica de Lemna
-    'tasa_crecimiento_lemna': 1.2,      
+    'tasa_crecimiento_lemna': 1.2,
     'tasa_mortalidad_lemna': 1.0,
-    'nutrientes_optimo_lemna': 0.05,     # mg/L P
-    'coef_nutrientes_lemna': 0.001,      # ton de Lemna consume más P (modelo)
-    'capacidad_carga_lemna': 2000,
+    'nutrientes_optimo_lemna': 0.05,    # mg/L
+    'coef_nutrientes_lemna': 0.001,     # consumo de P
+    'capacidad_carga_lemna': 2000,      # ton
 
     # Oxígeno
     'tasa_reoxigenacion': 5.0,
@@ -49,21 +47,26 @@ PARAMETROS_INICIALES = {
     'consumo_o2_lemna': 0.002,
     'consumo_o2_descomposicion': 0.05,
 
-    # Simulación
-    'tiempo_simulacion': 20,
-    'paso_tiempo': 0.1,
+    # Parámetros de simulación
+    'tiempo_simulacion': 20,            # años
+    'paso_tiempo': 0.1,                 # resolución (años)
 }
 
-# Procesos fisicoquímicos
+# ================================
+# PROCESOS FISICOQUÍMICOS
+# ================================
 PARAMETROS_ADICIONALES = {
-    'tasa_sedimentacion_nutrientes': 0.25,  
-    'tasa_dilution_natural': 0.03,
-    'coef_dilucion_volumen': 1.5e-5,
+    'tasa_sedimentacion_nutrientes': 0.25,  # fracción/año
+    'tasa_dilution_natural': 0.03,          # fracción/año
+    'coef_dilucion_volumen': 1.5e-5,        # coef. de mezcla
 }
 
+# Mezcla final
 PARAMETROS_DEFAULT = {**PARAMETROS_INICIALES, **PARAMETROS_ADICIONALES}
 
-# Validación
+# ================================
+# VALIDACIÓN DE PARÁMETROS
+# ================================
 def validar_parametros(params):
     validaciones = {
         'volumen_inicial': (5e11, 1.2e12, "Volumen debe estar entre 500–1200 km³"),
@@ -81,9 +84,14 @@ def validar_parametros(params):
 
     return True
 
+# ================================
+# FUNCIÓN PARA OBTENER PARÁMETROS
+# ================================
 def obtener_parametros(modificaciones=None):
     params = PARAMETROS_DEFAULT.copy()
+
     if modificaciones:
         params.update(modificaciones)
+
     validar_parametros(params)
     return params

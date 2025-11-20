@@ -19,7 +19,7 @@ class InstaladorTiticaca:
     def __init__(self):
         self.proyecto_dir = Path(__file__).parent
         self.directorios = ['config', 'core', 'simulation', 'visualization', 
-                           'resultados', 'graficos']
+                        'resultados', 'graficos']
     
     def crear_estructura(self):
         """Crea la estructura de directorios del proyecto."""
@@ -219,16 +219,16 @@ def main():
         if instalador.verificar_instalacion():
             instalador.ejecutar_tests()
         else:
-            print("\n⚠️  Instale las dependencias primero: python setup.py install")
+            print("\n  Instale las dependencias primero: python setup.py install")
     
     elif comando == 'demo':
         if instalador.verificar_instalacion():
             instalador.ejecutar_demo()
         else:
-            print("\n⚠️  Instale las dependencias primero: python setup.py install")
+            print("\n  Instale las dependencias primero: python setup.py install")
     
     elif comando == 'all':
-        print("\n🚀 INSTALACIÓN COMPLETA")
+        print("\n INSTALACIÓN COMPLETA")
         print("="*70 + "\n")
         
         instalador.crear_estructura()
@@ -251,7 +251,7 @@ def main():
         instalador.mostrar_ayuda()
     
     else:
-        print(f"\n⚠️  Comando desconocido: {comando}")
+        print(f"\n  Comando desconocido: {comando}")
         instalador.mostrar_ayuda()
 
 

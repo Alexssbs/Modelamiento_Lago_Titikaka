@@ -2,10 +2,15 @@
 Programa principal para ejecutar el Modelo de Dinámica de Sistemas 
 del Lago Titicaca.
 
+Nuevos parámetros añadidos:
+    --remocion-mecanica   → Habilita la remoción automática de Lemna
+    --anadir-lemna X      → Añade X toneladas de Lemna cuando la absorción llega a 100%
+
 Uso:
-    python main.py              # Ejecuta todas las simulaciones
-    python main.py --escenario base  # Ejecuta un escenario específico
-    python main.py --graficos   # Genera solo gráficos de resultados existentes
+    python main.py
+    python main.py --escenario base
+    python main.py --remocion-mecanica
+    python main.py --anadir-lemna 500
 """
 
 import argparse
@@ -20,8 +25,10 @@ from visualization.graficos import GraficadorTiticaca
 from config.escenarios import listar_escenarios
 
 
+# ============================
+# PARSEADOR DE ARGUMENTOS
+# ============================
 def parsear_argumentos():
-    """Parsea argumentos de línea de comandos."""
     parser = argparse.ArgumentParser(
         description='Modelo de Dinámica de Sistemas del Lago Titicaca'
     )
@@ -45,86 +52,100 @@ def parsear_argumentos():
         action='store_true',
         help='Solo generar gráficos (requiere resultados previos)'
     )
-    
+
     parser.add_argument(
         '--no-guardar',
         action='store_true',
         help='No guardar resultados en archivos'
     )
-    
+
+    parser.add_argument(
+        '--remocion-mecanica',
+        action='store_true',
+        help='Activa remoción mecánica cuando Lemna llega a 100% de absorción'
+    )
+
+    parser.add_argument(
+        '--anadir-lemna',
+        type=float,
+        help='Añade X toneladas de Lemna cada vez que la absorción llegue a 100%'
+    )
+
     parser.add_argument(
         '--dir-resultados',
         type=str,
         default='resultados',
-        help='Directorio para guardar resultados (default: resultados)'
+        help='Directorio para guardar resultados'
     )
     
     parser.add_argument(
         '--dir-graficos',
         type=str,
         default='graficos',
-        help='Directorio para guardar gráficos (default: graficos)'
+        help='Directorio para guardar gráficos'
     )
     
     return parser.parse_args()
 
 
+
+# ============================
+# FUNCIÓN PRINCIPAL
+# ============================
 def main():
-    """Función principal."""
     args = parsear_argumentos()
-    
-    # print("\n" + "="*80)
-    # print(" " * 15 + "MODELO DE DINÁMICA DE SISTEMAS")
-    # print(" " * 20 + "LAGO TITICACA")
-    #print("="*80 + "\n")
-    
-    # Crear runner
-    parametros = {'tiempo_simulacion': args.tiempo}
+
+    # Construimos parámetros adicionales según tus nuevas funciones:
+    parametros = {
+        'tiempo_simulacion': args.tiempo,
+        'usar_remocion_mecanica': args.remocion_mecanica,
+        'cantidad_anadir_lemna': args.anadir_lemna if args.anadir_lemna else 0
+    }
+
+    # Creamos el runner
     runner = RunnerSimulacion(parametros)
-    
-    # Ejecutar simulaciones
+
+    # ============================
+    # 1. EJECUTAR SIMULACIONES
+    # ============================
     if not args.graficos:
         if args.escenario:
-            # Ejecutar solo un escenario
-            runner.ejecutar_escenario(args.escenario, verbose=False)  # ← Cambiar a False
-            # print(f"Ejecutando escenario: {args.escenario}\n")
-            # runner.ejecutar_escenario(args.escenario)
+            # Solo un escenario
+            runner.ejecutar_escenario(args.escenario, verbose=False)
         else:
-            # Ejecutar todos los escenarios
-            #print("Ejecutando todos los escenarios...\n")
+            # Todos los escenarios
             runner.ejecutar_todos(verbose=False)
-        
-        # Mostrar tabla comparativa
-     
-    # Guardar resultados
+
+    # ============================
+    # 2. GUARDAR RESULTADOS
+    # ============================
     if not args.no_guardar:
-           # print("\n" + "="*80)
-           # print(" GUARDANDO RESULTADOS")
-           # print("="*80 + "\n")
-            runner.guardar_resultados(args.dir_resultados)
-    
-    # Generar gráficos
+        runner.guardar_resultados(args.dir_resultados)
+
+    # ============================
+    # 3. GENERAR GRÁFICOS
+    # ============================
     if runner.resultados:
-        # print("\n" + "="*80)
-        # print(" GENERANDO VISUALIZACIONES")
-        # print("="*80 + "\n")
-        
         graficador = GraficadorTiticaca(runner)
         
         if not args.no_guardar:
             graficador.generar_todos_graficos(args.dir_graficos)
-  
+
     return runner
 
 
+
+# ============================
+# EJECUCIÓN DEL PROGRAMA
+# ============================
 if __name__ == "__main__":
     try:
-        runner = main()
+        main()
     except KeyboardInterrupt:
-        print("\n\n⚠️  Simulación interrumpida por el usuario")
+        print("\n\nSimulación interrumpida por el usuario")
         sys.exit(1)
     except Exception as e:
-        print(f"\n\n❌ ERROR: {str(e)}")
+        print(f"\n\nERROR: {str(e)}")
         import traceback
         traceback.print_exc()
         sys.exit(1)
