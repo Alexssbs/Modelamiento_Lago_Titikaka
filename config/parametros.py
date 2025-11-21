@@ -1,5 +1,6 @@
 """
 Parámetros del Lago Titicaca basados en estudios reales para un modelo hidrológico-ecológico.
+Ajustados para evitar dinámica explosiva o reducción instantánea.
 """
 
 # ================================
@@ -7,12 +8,12 @@ Parámetros del Lago Titicaca basados en estudios reales para un modelo hidroló
 # ================================
 PARAMETROS_INICIALES = {
     # Stocks iniciales
-    'volumen_inicial': 8.93e11,         # m³ (valor real aproximado)
+    'volumen_inicial': 8.93e11,         # m³
 
-    # Nutrientes (Fósforo total): valores medidos en zona litoral (lluvias/seca)
+    # Nutrientes (Fósforo total)
     'nutrientes_inicial': 0.028,        # mg/L
 
-    # Biomasa Lemna (supuesto)
+    # Biomasa Lemna
     'lemna_inicial': 300,               # ton
 
     # Oxígeno disuelto inicial
@@ -26,39 +27,37 @@ PARAMETROS_INICIALES = {
     'flujo_rios': 6.5e9,                # m³/año
     'extraccion_humana': 1.5e8,         # m³/año
 
-    # Contaminación - descargas de fósforo
-    'descarga_puno': 15,                # t/año P
-    'descarga_juliaca': 15,             # t/año P
-    'descarga_otras': 5,                # t/año P
-
-    # Concentración de fósforo en aguas residuales
+    # Contaminación - descargas anuales de fósforo
+    'descarga_puno': 15,                # t/año
+    'descarga_juliaca': 15,             # t/año
+    'descarga_otras': 5,                # t/año
     'concentracion_descarga': 8,        # mg/L
 
-    # Dinámica de Lemna
-    'tasa_crecimiento_lemna': 1.2,
-    'tasa_mortalidad_lemna': 1.0,
-    'nutrientes_optimo_lemna': 0.05,    # mg/L
-    'coef_nutrientes_lemna': 0.001,     # consumo de P
+    # Dinámica biológica ajustada
+    'tasa_crecimiento_lemna': 0.3,      # reducido (antes 1.2)
+    'tasa_mortalidad_lemna': 0.2,       # reducido (antes 1.0)
+    'nutrientes_optimo_lemna': 0.05,
+    'coef_nutrientes_lemna': 0.0001,    # consumo ajustado
     'capacidad_carga_lemna': 2000,      # ton
 
     # Oxígeno
-    'tasa_reoxigenacion': 5.0,
+    'tasa_reoxigenacion': 1.5,          # más realista
     'oxigeno_saturacion': 8.5,
-    'consumo_o2_lemna': 0.002,
-    'consumo_o2_descomposicion': 0.05,
+    'consumo_o2_lemna': 0.001,
+    'consumo_o2_descomposicion': 0.02,
 
-    # Parámetros de simulación
+    # Simulación
     'tiempo_simulacion': 20,            # años
-    'paso_tiempo': 0.1,                 # resolución (años)
+    'paso_tiempo': 1/12,                # mensual
 }
 
 # ================================
 # PROCESOS FISICOQUÍMICOS
 # ================================
 PARAMETROS_ADICIONALES = {
-    'tasa_sedimentacion_nutrientes': 0.25,  # fracción/año
-    'tasa_dilution_natural': 0.03,          # fracción/año
-    'coef_dilucion_volumen': 1.5e-5,        # coef. de mezcla
+    'tasa_sedimentacion_nutrientes': 0.02,  # antes 0.25 → exagerado
+    'tasa_dilution_natural': 0.01,          # antes 0.03
+    'coef_dilucion_volumen': 1.5e-5,
 }
 
 # Mezcla final
@@ -73,7 +72,7 @@ def validar_parametros(params):
         'nutrientes_inicial': (0.001, 1.0, "Nutrientes deben estar entre 0.001–1.0 mg/L"),
         'lemna_inicial': (0, 5000, "Biomasa debe estar entre 0–5000 ton"),
         'oxigeno_inicial': (0, 12, "Oxígeno debe estar entre 0–12 mg/L"),
-        'tiempo_simulacion': (1, 200, "Tiempo de simulación debe estar entre 1–200 años"),
+        'tiempo_simulacion': (0, 200, "Tiempo de simulación debe estar entre 0–200 años"),
     }
 
     for param, (min_val, max_val, mensaje) in validaciones.items():
